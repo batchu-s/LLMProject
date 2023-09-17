@@ -140,7 +140,7 @@ if __name__ == "__main__":
     llm = get_openai_client(model="text-davinci-003")
     context = ""
 
-    for index, row in df.iterrows():
+    for index, row in df[0:50].iterrows():
         context = context + " " + row.text_chunks
 
     # define the prompt template
