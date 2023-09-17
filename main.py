@@ -23,7 +23,10 @@ def get_cohere_client():
     config = configparser.ConfigParser()
     config.read("config.properties")
 
-    return CohereEmbeddings(model="embed-english-light-v2.0",cohere_api_key=config['DEFAULT']['COHERE_API_KEY'])
+    return CohereEmbeddings(
+        model="embed-english-light-v2.0",
+        cohere_api_key=config['DEFAULT']['COHERE_API_KEY']
+    )
 
 #--------------------------------------------------------------------------
 
