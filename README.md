@@ -4,3 +4,4 @@
 ![Cohere](https://img.shields.io/badge/cohere_embeddings-purple)
 ![langchain](https://img.shields.io/badge/langchain-green)
 ![pandas](https://img.shields.io/badge/pandas-blue)
+![OpenAI](https://img.shields.io/badge/openai-yellow)
