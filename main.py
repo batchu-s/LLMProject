@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.bedrock import BedrockEmbeddings
 from langchain.embeddings.cohere import CohereEmbeddings
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
 from langchain import PromptTemplate
 import pandas as pd
 import configparser
@@ -93,6 +95,10 @@ if __name__ == "__main__":
 
     # Find all the text on the page
     article_text = soup.get_text()
+    article_text = article_text.replace("\n", "")
+
+    with open('output.txt', 'w', encoding="utf-8") as f:
+        f.write(article_text)
 
     ####################################################################
     # split text
@@ -107,41 +113,50 @@ if __name__ == "__main__":
 
     all_split_texts = text_splitter.create_documents([article_text])
 
-    # all_split_texts_json = [json.dumps(jsonable_encoder(doc)) for doc in all_split_texts]
-    text_chunks = [item.page_content for item in all_split_texts]
+    embeddings = OpenAIEmbeddings()
 
-    df = pd.DataFrame({'text_chunks': text_chunks})
+    db = Chroma.from_documents(all_split_texts, embeddings)
+
+    # all_split_texts_json = [json.dumps(jsonable_encoder(doc)) for doc in all_split_texts]
+    # text_chunks = [item.page_content for item in all_split_texts]
+
+    # df = pd.DataFrame({'text_chunks': text_chunks})
     
-    df['ada_embedding'] = df.text_chunks.apply(lambda x: get_embedding(x, model="text-embedding-ada-002"))
+    # df['ada_embedding'] = df.text_chunks.apply(lambda x: get_embedding(x, model="text-embedding-ada-002"))
     # print(df.head())
 
     # Calculate embeddings for the user's question.
     users_question = "Who is the prime minister of the United Kingdom?"
 
-    question_embedding = get_embedding(users_question, model="text-embedding-ada-002")
+    results = db.similarity_search(
+        query=users_question,
+        n_results=5
+    )
 
-    # create a list to store calculated cosine similarity
-    cosine_similarity = []
+    # question_embedding = get_embedding(users_question, model="text-embedding-ada-002")
 
-    for index, row in df.iterrows():
-       A = row.ada_embedding
-       B = question_embedding
+    # # create a list to store calculated cosine similarity
+    # cosine_similarity = []
+
+    # for index, row in df.iterrows():
+    #    A = row.ada_embedding
+    #    B = question_embedding
        
-       cosine = np.dot(A, B)/(np.linalg.norm(A)*np.linalg.norm(B))
+    #    cosine = np.dot(A, B)/(np.linalg.norm(A)*np.linalg.norm(B))
 
-       cosine_similarity.append(cosine)
+    #    cosine_similarity.append(cosine)
 
-    df['cosine_similarity'] = cosine_similarity
-    df.sort_values(by=['cosine_similarity'], ascending=False)
+    # df['cosine_similarity'] = cosine_similarity
+    # df.sort_values(by=['cosine_similarity'], ascending=False)
 
-    print(df.head())
+    # print(df.head())
 
     # Build a prompt template.
     llm = get_openai_client(model="text-davinci-003")
-    context = ""
+    # context = ""
 
-    for index, row in df[0:50].iterrows():
-        context = context + " " + row.text_chunks
+    # for index, row in df[0:50].iterrows():
+    #     context = context + " " + row.text_chunks
 
     # define the prompt template
     template = """
@@ -160,5 +175,5 @@ if __name__ == "__main__":
 
     prompt = PromptTemplate(template=template, input_variables=["context", "users_question"])
 
-    prompt_text = prompt.format(context=context, users_question=users_question)
+    prompt_text = prompt.format(context=results, users_question=users_question)
     print(llm(prompt_text))
