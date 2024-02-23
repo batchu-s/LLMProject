@@ -1,21 +1,23 @@
+import configparser
+import os
+import time
+
+# import json
+import numpy as np
+import openai
+import pandas as pd
 import requests
 # import boto3
 from bs4 import BeautifulSoup
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from fastapi.encoders import jsonable_encoder
+from langchain import PromptTemplate
 from langchain.embeddings.bedrock import BedrockEmbeddings
 from langchain.embeddings.cohere import CohereEmbeddings
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-from langchain import PromptTemplate
-import pandas as pd
-import configparser
-from fastapi.encoders import jsonable_encoder
-import time
-# import json
-import numpy as np
 from langchain.llms import OpenAI
-import os
-import openai
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Chroma
+
 
 def get_bedrock_client():
     """This function returns the amazon Bedrock client
@@ -85,7 +87,7 @@ if __name__ == "__main__":
     # load documents
     ####################################################################
     # URL of the Wikipedia page to scrape
-    url = 'https://en.wikipedia.org/wiki/Prime_Minister_of_the_United_Kingdom'
+    url = 'https://en.wikipedia.org/wiki/List_of_prime_ministers_of_India'
 
     # Send a GET request to the URL
     response = requests.get(url)
@@ -126,7 +128,7 @@ if __name__ == "__main__":
     # print(df.head())
 
     # Calculate embeddings for the user's question.
-    users_question = "Who is the prime minister of the United Kingdom?"
+    users_question = "Are there any former Prime Ministers from Nandyal?"
 
     results = db.similarity_search(
         query=users_question,
@@ -161,8 +163,7 @@ if __name__ == "__main__":
     # define the prompt template
     template = """
     You are a chat bot who loves to help people! Given the following context sections, answer the
-    question using only the given context. If you are unsure and the answer is not
-    explicitly writting in the documentation, say "Sorry, I don't know how to help with that."
+    question using only the given context. 
 
     Context sections:
     {context}
