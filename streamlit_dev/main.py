@@ -15,7 +15,7 @@ speech_file_path = Path(__file__).parent / "speech.mp3"
 st.title("💬 My Test")
 
 description = """
-HHi There!! This is Sumanth. I am a software engineer and I am working on a project called LLMProject.
+Hi There!! This is Sumanth. I am a software engineer and I am working on a project called LLMProject.
 
 """
 
