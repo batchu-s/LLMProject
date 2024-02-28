@@ -17,8 +17,8 @@ if __name__ == "__main__":
     # and print the response
     stream = openai_client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "Act as a professional in Python programming language."},
-            {"role": "user", "content": "What is an async function in Python? Give an example with explination."},
+            {"role": "system", "content": "Act as a professional Attorney."},
+            {"role": "user", "content": "I am a Software Engineer with an H-1B visa. I also want to be a freelance web developer. What are the legal implications?"},
         ],
         model="gpt-4-0125-preview",
         stream=True
