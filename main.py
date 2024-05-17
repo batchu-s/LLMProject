@@ -1,15 +1,11 @@
 import configparser
 import os
-import time
 
 # import json
-import numpy as np
 import openai
-import pandas as pd
 import requests
 # import boto3
 from bs4 import BeautifulSoup
-from fastapi.encoders import jsonable_encoder
 from langchain import PromptTemplate
 from langchain.embeddings.bedrock import BedrockEmbeddings
 from langchain.embeddings.cohere import CohereEmbeddings
@@ -32,7 +28,6 @@ def get_bedrock_client():
     )
     return bedrock_llm
 
-#--------------------------------------------------------------------------
 
 def get_cohere_client():
     """This function returns the cohere client
@@ -48,7 +43,6 @@ def get_cohere_client():
         cohere_api_key=config['DEFAULT']['COHERE_API_KEY']
     )
 
-#--------------------------------------------------------------------------
 
 def get_openai_client(model: str) -> OpenAI:
     """This function returns the openai client
@@ -61,7 +55,6 @@ def get_openai_client(model: str) -> OpenAI:
     """
     return OpenAI(model=model, temperature=0.7)
 
-#--------------------------------------------------------------------------
 
 def get_embedding(text: str, model="text-embedding-ada-002") -> list:
     """This function takes text and returns the embedding of the text
@@ -75,7 +68,6 @@ def get_embedding(text: str, model="text-embedding-ada-002") -> list:
     text = text.replace("\n", " ")
     return openai.Embedding.create(input=text, model=model)['data'][0]['embedding']
 
-#--------------------------------------------------------------------------
 
 if __name__ == "__main__":
 
@@ -107,11 +99,10 @@ if __name__ == "__main__":
     ####################################################################
     text_splitter = RecursiveCharacterTextSplitter(
         # Set a really small chunk size, just to show.
-        chunk_size = 100,
-        chunk_overlap  = 20,
-        length_function = len,
+        chunk_size=100,
+        chunk_overlap=20,
+        length_function=len,
     )
-
 
     all_split_texts = text_splitter.create_documents([article_text])
 
@@ -123,7 +114,6 @@ if __name__ == "__main__":
     # text_chunks = [item.page_content for item in all_split_texts]
 
     # df = pd.DataFrame({'text_chunks': text_chunks})
-    
     # df['ada_embedding'] = df.text_chunks.apply(lambda x: get_embedding(x, model="text-embedding-ada-002"))
     # print(df.head())
 
@@ -143,7 +133,6 @@ if __name__ == "__main__":
     # for index, row in df.iterrows():
     #    A = row.ada_embedding
     #    B = question_embedding
-       
     #    cosine = np.dot(A, B)/(np.linalg.norm(A)*np.linalg.norm(B))
 
     #    cosine_similarity.append(cosine)
@@ -163,7 +152,7 @@ if __name__ == "__main__":
     # define the prompt template
     template = """
     You are a chat bot who loves to help people! Given the following context sections, answer the
-    question using only the given context. 
+    question using only the given context.
 
     Context sections:
     {context}
