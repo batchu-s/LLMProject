@@ -11,24 +11,24 @@ on:
       - master
 
 jobs:
-  run-linters:
-    name: Run linters
+  lint-codebase:
+    name: Lint Codebase
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out Git repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v1
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.8
 
-      - name: Install Python dependencies
-        run: pip install black flake8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
 
-      - name: Run linters
-        uses: wearerequired/lint-action@v2
-        with:
-          black: true
-          flake8: true
+      - name: Lint with flake8
+        run: |
+          flake8 --count --show-source --statistics .
