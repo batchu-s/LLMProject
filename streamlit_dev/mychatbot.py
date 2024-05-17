@@ -25,7 +25,6 @@ if prompt := st.chat_input("What is up?"):
         # print(f"{message['role']}: {message['content']}")
         with st.chat_message(message["role"]):
             st.write(message["content"])
-    
 
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):

@@ -1,6 +1,4 @@
 import streamlit as st
-import pandas as pd
-from mylogger import log
 from openai import OpenAI
 import configparser
 from pathlib import Path
@@ -26,6 +24,7 @@ def audio():
         voice="shimmer"
     ) as response:
         response.stream_to_file(speech_file_path)
+
 
 audio()
 
