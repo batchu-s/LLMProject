@@ -5,6 +5,7 @@ import configparser
 conf = configparser.ConfigParser()
 conf.read("config.properties")
 api_key = conf["DEFAULT"]["OPENAI_API_KEY"]
+openai_model = conf["DEFAULT"]["OPENAI_MODEL"]
 
 client = OpenAI(api_key=api_key)
 
@@ -13,7 +14,7 @@ st.markdown("----")
 st.caption("🚀 A streamlit chatbot powered by OpenAI LLM")
 
 if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-4-0125-preview"
+    st.session_state["openai_model"] = openai_model
 
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
